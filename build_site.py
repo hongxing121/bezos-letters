@@ -12,8 +12,8 @@ import markdown
 from pathlib import Path
 
 # ── Config ────────────────────────────────────────────────────────────────────
-VAULT = Path(__file__).parent / "vault"
-OUT   = Path(__file__).parent / "site"
+VAULT = Path("/Users/hongxing/Documents/Obsidian Vault/贝佐斯/贝佐斯")
+OUT   = Path("/Users/hongxing/project/webchat/bezos-site")
 
 CATEGORY_DIRS = {
     "letters":     "letters",
@@ -840,7 +840,7 @@ body{
   border-radius:50%;
   background:radial-gradient(circle,rgba(184,134,11,.15),transparent 70%);
 }
-.promo-story{flex:1;position:relative;z-index:1}
+.promo-story{flex:1;position:relative;z-index:1;min-width:0}
 .promo-story h3{
   font-family:var(--serif);
   font-size:20px;
@@ -849,6 +849,36 @@ body{
   color:var(--gold-light);
 }
 .promo-story p{font-size:14px;color:rgba(255,255,255,.75);line-height:1.8;margin:8px 0}
+.promo-credit{
+  margin-top:16px !important;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.12);
+  font-size:13px !important;
+}
+.promo-credit strong{color:var(--gold-light);font-weight:700}
+
+.promo-qr{
+  flex-shrink:0;
+  position:relative;
+  z-index:1;
+  text-align:center;
+}
+.qr-img{
+  display:block;
+  width:140px;
+  height:140px;
+  border-radius:12px;
+  border:3px solid rgba(255,255,255,.15);
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+  background:#fff;
+  padding:6px;
+}
+.qr-text{
+  font-size:12px;
+  color:rgba(255,255,255,.6);
+  margin-top:10px;
+  letter-spacing:.5px;
+}
 
 /* ===== ANIMATIONS ===== */
 @keyframes fadeUp{
@@ -1205,6 +1235,11 @@ def build_homepage(files, link_map, ref_counts):
     <h3>关于本站</h3>
     <p>把贝佐斯 24 年（1997—2020）的亚马逊股东信变成一张互相连接的知识图谱。每个概念、每项业务、每位人物都能一键溯源到原文。</p>
     <p>从 "Day 1" 到 "差异化即生存"，从 AWS 到 Prime，跟着贝佐斯走过亚马逊从网上书店到全球科技巨头的二十四年。</p>
+    <p class="promo-credit">本站是由作者与 <strong>Claude Code</strong> 共同完成的。想了解和交流更多 AI 机会的话，欢迎扫码关注公众号。</p>
+  </div>
+  <div class="promo-qr">
+    <img src="/assets/qrcode.jpg" alt="公众号二维码" class="qr-img">
+    <p class="qr-text">扫码关注公众号</p>
   </div>
 </div>
 
@@ -1219,6 +1254,12 @@ def main():
     # Clean output
     if OUT.exists():
         shutil.rmtree(OUT)
+
+    # Copy static assets (e.g. QR code)
+    assets_src = Path(__file__).parent / "assets"
+    if assets_src.is_dir():
+        shutil.copytree(assets_src, OUT / "assets")
+        print(f"Copied assets/ ({len(list(assets_src.iterdir()))} files)")
 
     # Collect
     print("Collecting files...")
